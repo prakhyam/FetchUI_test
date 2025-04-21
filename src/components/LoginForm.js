@@ -47,7 +47,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 4, maxWidth: 400, width: '100%' }}>
+    <Paper elevation={6} sx={{ p: 5, maxWidth: 450, width: '100%', borderRadius: 3, background: 'linear-gradient(145deg, #ffffff, #f0f4f8)'}}>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
           <PetsIcon />

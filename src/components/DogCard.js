@@ -16,15 +16,20 @@ const DogCard = ({ dog, isFavorite, onToggleFavorite }) => {
 
   return (
     <Card 
-      className={`dog-card ${isFavorite ? 'favorited' : ''}`}
-      sx={{ 
-        height: '100%', 
-        display: 'flex', 
-        flexDirection: 'column',
-        position: 'relative',
-        overflow: 'visible'
-      }}
-    >
+  className={`dog-card ${isFavorite ? 'favorited' : ''}`}
+  sx={{ 
+    height: '100%', 
+    display: 'flex', 
+    flexDirection: 'column',
+    position: 'relative',
+    overflow: 'visible',
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+      transform: 'translateY(-8px)',
+      boxShadow: '0 12px 20px rgba(0, 0, 0, 0.15)',
+    }
+  }}
+>
       <CardMedia
         component="img"
         height="200"
