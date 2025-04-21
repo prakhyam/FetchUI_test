@@ -93,9 +93,9 @@ const MatchPage = () => {
         </Toolbar>
       </AppBar>
       
-      <Container sx={{ py: 4, flexGrow: 1 }}>
+      <Container maxWidth="lg" sx={{ py: 4, flexGrow: 1 }}>
         {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', my: 8 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 8, mb: 4 }}>
             <CircularProgress />
           </Box>
         ) : error ? (
