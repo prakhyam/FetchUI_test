@@ -20,6 +20,8 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
+
+    //regex to check if email format is correct
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
@@ -28,18 +30,19 @@ const LoginForm = () => {
     e.preventDefault();
     setFormError('');
 
-    // Validate form
+    // Validate form if name is filled
     if (!name.trim()) {
       setFormError('Please enter your name');
       return;
     }
 
+    // Check if email is filled in and valid
     if (!email.trim() || !validateEmail(email)) {
       setFormError('Please enter a valid email address');
       return;
     }
 
-    // Attempt login
+    // login
     const result = await login(name, email);
     if (result.success) {
       navigate('/search');

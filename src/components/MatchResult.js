@@ -32,6 +32,8 @@ const MatchResult = ({ matchedDog, onRestartSearch }) => {
     );
   }
 
+  // eslint-disable-next-line no-lone-blocks
+  {/* Displaying match result when a dog is found */}
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center' }}>
       <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
@@ -52,6 +54,8 @@ const MatchResult = ({ matchedDog, onRestartSearch }) => {
             alt={matchedDog.name}
             sx={{ objectFit: 'cover' }}
           />
+
+      {/*Dog Name and Favorite Icon*/}
           <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
               <Typography variant="h5" component="div" sx={{ mr: 1 }}>
@@ -74,6 +78,7 @@ const MatchResult = ({ matchedDog, onRestartSearch }) => {
               />
             </Box>
             
+            {/* Location display*/}
             <Typography variant="body1">
               Location: {matchedDog.zip_code}
             </Typography>
