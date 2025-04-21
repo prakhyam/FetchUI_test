@@ -9,6 +9,7 @@ import {
 import DogCard from './DogCard';
 import Pagination from './Pagination';
 
+
 const DogList = ({ 
   dogs, 
   loading, 
@@ -30,6 +31,8 @@ const DogList = ({
     );
   }
 
+
+  {/* Error state */}
   if (error) {
     return (
       <Box sx={{ my: 4, textAlign: 'center' }}>

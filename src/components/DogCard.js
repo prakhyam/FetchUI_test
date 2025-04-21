@@ -8,6 +8,8 @@ import {
   Box,
   Chip
 } from '@mui/material';
+
+//icons for favourite button - toggle
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
@@ -54,6 +56,7 @@ const DogCard = ({ dog, isFavorite, onToggleFavorite }) => {
           }
         }}
       >
+        {/* favorite status */}
         {isFavorite ? 
           <FavoriteIcon color="secondary" /> : 
           <FavoriteBorderIcon />

@@ -79,6 +79,7 @@ const FilterPanel = ({
         Search Filters
       </Typography>
       
+      {/* Breed Filter*/}
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Accordion defaultExpanded>
@@ -114,6 +115,7 @@ const FilterPanel = ({
           </Accordion>
         </Grid>
         
+        {/* Age Filter section */}
         <Grid item xs={12} md={6}>
           <Accordion defaultExpanded>
             <AccordionSummary
@@ -152,6 +154,9 @@ const FilterPanel = ({
       </Grid>
       
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
+
+        {/* Sort dropdown for ascending/descending and breed/name/age */}
+
         <SortSelector sortOrder={sortOrder} onSortChange={onSortChange} />
         
         <Box>

@@ -10,6 +10,8 @@ const SortSelector = ({ sortOrder, onSortChange }) => {
   return (
     <FormControl sx={{ minWidth: 200 }}>
       <InputLabel id="sort-selector-label">Sort By</InputLabel>
+
+      {/* Dropdown menu bound to sortOrder */}
       <Select
         labelId="sort-selector-label"
         id="sort-selector"
@@ -17,6 +19,8 @@ const SortSelector = ({ sortOrder, onSortChange }) => {
         label="Sort By"
         onChange={(e) => onSortChange(e.target.value)}
       >
+
+      {/* Each MenuItem sets a different sort field and direction */}
         <MenuItem value="breed:asc">Breed (A-Z)</MenuItem>
         <MenuItem value="breed:desc">Breed (Z-A)</MenuItem>
         <MenuItem value="name:asc">Name (A-Z)</MenuItem>

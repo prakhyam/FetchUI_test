@@ -9,7 +9,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect if already logged in
+    // Redirect to /search page, if already logged in
     if (currentUser) {
       navigate('/search');
     }

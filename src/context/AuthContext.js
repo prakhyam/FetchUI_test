@@ -1,8 +1,11 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { login as apiLogin, logout as apiLogout } from '../api/fetchAPI';
 
+//authentication context
 const AuthContext = createContext();
 
+
+// hook to allow access to the auth context from any component
 export const useAuth = () => {
   return useContext(AuthContext);
 };
@@ -25,7 +28,11 @@ export const AuthProvider = ({ children }) => {
     try {
       setError('');
       setLoading(true);
+
+      // Send login request to backend
       await apiLogin(name, email);
+
+      // If successful, store user info locally
       const userData = { name, email };
       setCurrentUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -41,7 +48,11 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       setLoading(true);
+
+    // Call logout endpoint to clear server session
       await apiLogout();
+
+      // Clearing local state and storage
       setCurrentUser(null);
       localStorage.removeItem('user');
     } catch (err) {

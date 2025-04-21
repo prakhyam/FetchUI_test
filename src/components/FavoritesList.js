@@ -21,6 +21,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 
+
+//favorited dogs in a side drawer
 const FavoritesList = ({ 
   open, 
   onClose, 
@@ -29,7 +31,7 @@ const FavoritesList = ({
   onRemoveFavorite,
   onGenerateMatch
 }) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); //navigation to other pages
   
   const handleGenerateMatch = () => {
     onClose();
@@ -61,6 +63,7 @@ const FavoritesList = ({
         
         <Divider sx={{ mb: 2 }} />
         
+        {/* If there are no favorites, show an empty state message */}
         {favorites.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="body1" color="text.secondary">
@@ -72,6 +75,8 @@ const FavoritesList = ({
           </Box>
         ) : (
           <>
+
+          {/* List of favorited dogs */}
             <List sx={{ mb: 2 }}>
               {favoriteDogs.map((dog) => (
                 <ListItem key={dog.id} alignItems="flex-start">
@@ -83,6 +88,8 @@ const FavoritesList = ({
                       sx={{ width: 60, height: 60, mr: 1 }}
                     />
                   </ListItemAvatar>
+
+                  {/* Dog name, breed, and age */}
                   <ListItemText
                     primary={dog.name}
                     secondary={
@@ -94,6 +101,8 @@ const FavoritesList = ({
                       </>
                     }
                   />
+
+                  {/* Delete button to remove from favorites */}
                   <ListItemSecondaryAction>
                     <IconButton 
                       edge="end" 
@@ -107,6 +116,7 @@ const FavoritesList = ({
               ))}
             </List>
             
+             {/* "Find My Match" button */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
               <Button
                 variant="contained"
