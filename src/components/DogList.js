@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Grid, 
   Box, 
@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import DogCard from './DogCard';
 import Pagination from './Pagination';
-
+import { getLocations } from '../api/fetchAPI';
 
 const DogList = ({ 
   dogs, 
@@ -23,6 +23,31 @@ const DogList = ({
   hasNext,
   hasPrev
 }) => {
+  const [locationData, setLocationData] = useState([]);
+  const [loadingLocations, setLoadingLocations] = useState(false);
+
+  // Fetch location data for current dogs
+  useEffect(() => {
+    const fetchLocationData = async () => {
+      if (!dogs || dogs.length === 0) return;
+      
+      const zipCodes = [...new Set(dogs.map(dog => dog.zip_code))];
+      if (zipCodes.length === 0) return;
+      
+      setLoadingLocations(true);
+      try {
+        const locationsData = await getLocations(zipCodes);
+        setLocationData(locationsData);
+      } catch (err) {
+        console.error('Error fetching location data:', err);
+      } finally {
+        setLoadingLocations(false);
+      }
+    };
+    
+    fetchLocationData();
+  }, [dogs]);
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
@@ -31,8 +56,6 @@ const DogList = ({
     );
   }
 
-
-  {/* Error state */}
   if (error) {
     return (
       <Box sx={{ my: 4, textAlign: 'center' }}>
@@ -68,6 +91,7 @@ const DogList = ({
               dog={dog} 
               isFavorite={favorites.includes(dog.id)}
               onToggleFavorite={onToggleFavorite}
+              locationData={locationData}
             />
           </Grid>
         ))}
