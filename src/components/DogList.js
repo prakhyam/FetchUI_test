@@ -26,7 +26,7 @@ const DogList = ({
   const [locationData, setLocationData] = useState([]);
   const [loadingLocations, setLoadingLocations] = useState(false);
 
-  // Fetch location data for current dogs
+  // Fetching city/state info for unique ZIP codes from the dog list
   useEffect(() => {
     const fetchLocationData = async () => {
       if (!dogs || dogs.length === 0) return;

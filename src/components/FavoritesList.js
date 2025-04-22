@@ -31,7 +31,7 @@ const FavoritesList = ({
   onRemoveFavorite,
   onGenerateMatch
 }) => {
-  const navigate = useNavigate(); //navigation to other pages
+  const navigate = useNavigate(); 
   
   const handleGenerateMatch = () => {
     onClose();

@@ -47,7 +47,6 @@ const theme = createTheme({
   shadows: [...createTheme().shadows],
 });
 
-// Loading spinner component
 const LoadingSpinner = () => (
   <Box 
     sx={{ 
@@ -61,7 +60,6 @@ const LoadingSpinner = () => (
   </Box>
 );
 
-// Protected route component
 const ProtectedRoute = ({ children }) => {
   const { currentUser, loading } = useAuth();
   

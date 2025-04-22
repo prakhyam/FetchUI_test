@@ -75,7 +75,6 @@ const SearchPage = () => {
     loadDogs();
   }, []);
   
-  // Update favorite dogs whenever favorites change
   useEffect(() => {
     const fetchFavoriteDogs = async () => {
       if (favorites.length > 0) {
@@ -93,7 +92,6 @@ const SearchPage = () => {
     fetchFavoriteDogs();
   }, [favorites]);
   
-  // Functions for handling search and filtering
   const loadDogs = async (
     cursor = null, 
     sort = sortOrder, 
@@ -123,7 +121,6 @@ const SearchPage = () => {
         searchParams.ageMax = maxAge;
       }
       
-      // Add zip codes if locations are selected
       if (locations && locations.length > 0) {
         const allZipCodes = locations.flatMap(loc => {
           if (loc.zip_codes && loc.zip_codes.length > 0) {
@@ -140,9 +137,7 @@ const SearchPage = () => {
       }
       
       
-      // Handle pagination cursor properly
       if (cursor) {
-        // Parse the cursor value if it's a string containing a URL query
         if (typeof cursor === 'string' && cursor.includes('from=')) {
           const fromMatch = cursor.match(/from=(\d+)/);
           if (fromMatch && fromMatch[1]) {
@@ -177,7 +172,6 @@ const SearchPage = () => {
   
   const handlePageChange = (newPage) => {
     if (newPage > currentPage && hasNext) {
-      // Extract the cursor from the nextCursor string
       if (typeof nextCursor === 'string' && nextCursor.includes('from=')) {
         const fromMatch = nextCursor.match(/from=(\d+)/);
         if (fromMatch && fromMatch[1]) {
@@ -190,7 +184,6 @@ const SearchPage = () => {
       }
       setCurrentPage(newPage);
     } else if (newPage < currentPage && hasPrev) {
-      // Extract the cursor from the prevCursor string
       if (typeof prevCursor === 'string' && prevCursor.includes('from=')) {
         const fromMatch = prevCursor.match(/from=(\d+)/);
         if (fromMatch && fromMatch[1]) {
@@ -212,7 +205,6 @@ const SearchPage = () => {
     setAgeMax(localAgeMax);
     setSelectedLocations(localLocations);
     
-    // Use the values passed directly from FilterPanel
     loadDogs(null, sortOrder, localBreeds, localAgeMin, localAgeMax, localLocations);
   };
   
@@ -222,7 +214,6 @@ const SearchPage = () => {
     loadDogs(null, newSort);
   };
   
-  // Functions for handling favorites
   const handleToggleFavorite = (dogId) => {
     if (favorites.includes(dogId)) {
       setFavorites(favorites.filter(id => id !== dogId));

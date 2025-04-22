@@ -28,7 +28,6 @@ const MatchPage = () => {
       try {
         setLoading(true);
 
-        // Get the matched dog ID
         const matchedDogId = localStorage.getItem('matchedDogId');
         
         if (!matchedDogId) {
@@ -37,7 +36,6 @@ const MatchPage = () => {
         }
         
 
-        // Fetching the dog's full info using ID
         const dogsData = await getDogs([matchedDogId]);
         if (dogsData && dogsData.length > 0) {
           setMatchedDog(dogsData[0]);

@@ -3,7 +3,6 @@ import { Box, Button } from '@mui/material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
-// current page, function to handle page change, and booleans for next/previous availability
 const Pagination = ({ currentPage, onPageChange, hasNext, hasPrev }) => {
   return (
     <Box className="pagination-container">
