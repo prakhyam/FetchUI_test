@@ -5,9 +5,8 @@ import {
   AppBar, 
   Toolbar, 
   Typography, 
-  Button, 
-  Badge,
   IconButton,
+  Badge,
   Snackbar,
   Alert
 } from '@mui/material';
@@ -19,7 +18,7 @@ import {
   getBreeds, 
   searchDogs, 
   getDogs, 
-  getMatch 
+  getMatch
 } from '../api/fetchAPI';
 
 import FilterPanel from '../components/FilterPanel';
@@ -36,6 +35,7 @@ const SearchPage = () => {
   const [sortOrder, setSortOrder] = useState('breed:asc');
   const [ageMin, setAgeMin] = useState('');
   const [ageMax, setAgeMax] = useState('');
+  const [selectedLocations, setSelectedLocations] = useState([]);
   
   const [dogs, setDogs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -94,7 +94,14 @@ const SearchPage = () => {
   }, [favorites]);
   
   // Functions for handling search and filtering
-  const loadDogs = async (cursor = null, sort = sortOrder, breeds = selectedBreeds, minAge = ageMin, maxAge = ageMax) => {
+  const loadDogs = async (
+    cursor = null, 
+    sort = sortOrder, 
+    breeds = selectedBreeds, 
+    minAge = ageMin, 
+    maxAge = ageMax,
+    locations = selectedLocations
+  ) => {
     setLoading(true);
     setError('');
     
@@ -116,7 +123,24 @@ const SearchPage = () => {
         searchParams.ageMax = maxAge;
       }
       
-      // Fixed: Handle pagination cursor properly
+      // Add zip codes if locations are selected
+      if (locations && locations.length > 0) {
+        const allZipCodes = locations.flatMap(loc => {
+          if (loc.zip_codes && loc.zip_codes.length > 0) {
+            return loc.zip_codes;
+          } else if (loc.zip_code) {
+            return [loc.zip_code];
+          }
+          return [];
+        });
+      
+        if (allZipCodes.length > 0) {
+          searchParams.zipCodes = allZipCodes;
+        }
+      }
+      
+      
+      // Handle pagination cursor properly
       if (cursor) {
         // Parse the cursor value if it's a string containing a URL query
         if (typeof cursor === 'string' && cursor.includes('from=')) {
@@ -181,10 +205,15 @@ const SearchPage = () => {
     }
   };
   
-  const handleApplyFilters = (localBreeds, localAgeMin, localAgeMax) => {
+  const handleApplyFilters = (localBreeds, localAgeMin, localAgeMax, localLocations) => {
     setCurrentPage(1);
-    // Use the values passed directly from FilterPanel instead of the state which might not be updated yet
-    loadDogs(null, sortOrder, localBreeds, localAgeMin, localAgeMax);
+    setSelectedBreeds(localBreeds);
+    setAgeMin(localAgeMin);
+    setAgeMax(localAgeMax);
+    setSelectedLocations(localLocations);
+    
+    // Use the values passed directly from FilterPanel
+    loadDogs(null, sortOrder, localBreeds, localAgeMin, localAgeMax, localLocations);
   };
   
   const handleSortChange = (newSort) => {
@@ -299,6 +328,8 @@ const SearchPage = () => {
             setAgeMin(min);
             setAgeMax(max);
           }}
+          selectedLocations={selectedLocations}
+          onLocationsChange={setSelectedLocations}
           onApplyFilters={handleApplyFilters}
         />
         

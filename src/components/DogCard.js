@@ -6,32 +6,40 @@ import {
   Typography, 
   Button, 
   Box,
-  Chip
+  Chip,
+  Tooltip
 } from '@mui/material';
-
-//icons for favourite button - toggle
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-const DogCard = ({ dog, isFavorite, onToggleFavorite }) => {
+const DogCard = ({ dog, isFavorite, onToggleFavorite, locationData }) => {
   const { id, img, name, age, zip_code, breed } = dog;
+
+  // Get location data for this dog if available
+  const location = locationData && locationData.length > 0 ? 
+    locationData.find(loc => loc.zip_code === zip_code) : null;
+  
+  const locationDisplay = location ? 
+    `${location.city}, ${location.state}` : 
+    zip_code;
 
   return (
     <Card 
-  className={`dog-card ${isFavorite ? 'favorited' : ''}`}
-  sx={{ 
-    height: '100%', 
-    display: 'flex', 
-    flexDirection: 'column',
-    position: 'relative',
-    overflow: 'visible',
-    transition: 'all 0.3s ease-in-out',
-    '&:hover': {
-      transform: 'translateY(-8px)',
-      boxShadow: '0 12px 20px rgba(0, 0, 0, 0.15)',
-    }
-  }}
->
+      className={`dog-card ${isFavorite ? 'favorited' : ''}`}
+      sx={{ 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        position: 'relative',
+        overflow: 'visible',
+        transition: 'all 0.3s ease-in-out',
+        '&:hover': {
+          transform: 'translateY(-8px)',
+          boxShadow: '0 12px 20px rgba(0, 0, 0, 0.15)',
+        }
+      }}
+    >
       <CardMedia
         component="img"
         height="200"
@@ -56,7 +64,6 @@ const DogCard = ({ dog, isFavorite, onToggleFavorite }) => {
           }
         }}
       >
-        {/* favorite status */}
         {isFavorite ? 
           <FavoriteIcon color="secondary" /> : 
           <FavoriteBorderIcon />
@@ -73,8 +80,11 @@ const DogCard = ({ dog, isFavorite, onToggleFavorite }) => {
             <strong>Age:</strong> {age} {age === 1 ? 'year' : 'years'}
           </Typography>
           
-          <Typography variant="body2" color="text.secondary">
-            <strong>Location:</strong> {zip_code}
+          <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+            <LocationOnIcon fontSize="small" sx={{ mr: 0.5 }} />
+            <Tooltip title={`ZIP: ${zip_code}`} arrow placement="top">
+              <span>{locationDisplay}</span>
+            </Tooltip>
           </Typography>
           
           <Box sx={{ mt: 1 }}>

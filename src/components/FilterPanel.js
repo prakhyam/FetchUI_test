@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SortSelector from './SortSelector';
+import LocationFilter from './LocationFilter';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -40,11 +41,14 @@ const FilterPanel = ({
   ageMin,
   ageMax,
   onAgeChange,
+  selectedLocations,
+  onLocationsChange,
   onApplyFilters
 }) => {
   const [localBreeds, setLocalBreeds] = useState(selectedBreeds);
   const [localAgeMin, setLocalAgeMin] = useState(ageMin);
   const [localAgeMax, setLocalAgeMax] = useState(ageMax);
+  const [localLocations, setLocalLocations] = useState(selectedLocations || []);
 
   const handleBreedChange = (event) => {
     const {
@@ -55,22 +59,29 @@ const FilterPanel = ({
     );
   };
 
+  const handleLocationChange = (newLocations) => {
+    setLocalLocations(newLocations);
+  };
+
   const handleApplyFilters = () => {
     // Update parent component state
     onBreedsChange(localBreeds);
     onAgeChange(localAgeMin, localAgeMax);
+    onLocationsChange(localLocations);
     
     // Pass local state directly to onApplyFilters
-    onApplyFilters(localBreeds, localAgeMin, localAgeMax);
+    onApplyFilters(localBreeds, localAgeMin, localAgeMax, localLocations);
   };
 
   const handleResetFilters = () => {
     setLocalBreeds([]);
     setLocalAgeMin('');
     setLocalAgeMax('');
+    setLocalLocations([]);
     onBreedsChange([]);
     onAgeChange('', '');
-    onApplyFilters([], '', '');
+    onLocationsChange([]);
+    onApplyFilters([], '', '', []);
   };
 
   return (
@@ -79,9 +90,9 @@ const FilterPanel = ({
         Search Filters
       </Typography>
       
-      {/* Breed Filter*/}
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+        {/* Breed Filter*/}
+        <Grid item xs={12} md={4}>
           <Accordion defaultExpanded>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -116,7 +127,7 @@ const FilterPanel = ({
         </Grid>
         
         {/* Age Filter section */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <Accordion defaultExpanded>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -151,12 +162,29 @@ const FilterPanel = ({
             </AccordionDetails>
           </Accordion>
         </Grid>
+
+        {/* Location Filter section */}
+        <Grid item xs={12} md={4}>
+          <Accordion defaultExpanded>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="location-filter-content"
+              id="location-filter-header"
+            >
+              <Typography>Location</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <LocationFilter 
+                selectedLocations={localLocations}
+                onLocationsChange={handleLocationChange}
+              />
+            </AccordionDetails>
+          </Accordion>
+        </Grid>
       </Grid>
       
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 3 }}>
-
         {/* Sort dropdown for ascending/descending and breed/name/age */}
-
         <SortSelector sortOrder={sortOrder} onSortChange={onSortChange} />
         
         <Box>

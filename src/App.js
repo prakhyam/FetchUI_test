@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { Box, CircularProgress } from '@mui/material';
 
 // Pages
 import LoginPage from './pages/LoginPage';
@@ -13,29 +14,25 @@ import MatchPage from './pages/MatchPage';
 const theme = createTheme({
   palette: {
     primary: {
-      //main: '#592a7d',
-      main: '#592a7d', 
+      main: '#592a7d',
       light: '#6ab7ff',
       dark: '#005cb2',
     },
     secondary: {
-      //main: '#f50057',
-      main: '#f50057', 
+      main: '#f50057',
       light: '#ff9e40',
       dark: '#c43c00',
     },
     background: {
-      //default: '#f5f5f5',
       default: '#f8f9fa',
       paper: '#ffffff',
     },
-     text: {
+    text: {
       primary: '#2c3e50',
       secondary: '#546e7a',
     },
   },
   typography: {
-    //fontFamily: 'Roboto, Arial, sans-serif',
     fontFamily: '"Nunito", "Roboto", "Arial", sans-serif',
     h5: {
       fontWeight: 600,
@@ -48,7 +45,20 @@ const theme = createTheme({
     borderRadius: 8,
   },
   shadows: [...createTheme().shadows],
-  },
+});
+
+// Loading spinner component
+const LoadingSpinner = () => (
+  <Box 
+    sx={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center',
+      height: '100vh'
+    }}
+  >
+    <CircularProgress />
+  </Box>
 );
 
 // Protected route component
@@ -56,7 +66,7 @@ const ProtectedRoute = ({ children }) => {
   const { currentUser, loading } = useAuth();
   
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner />;
   }
   
   if (!currentUser) {

@@ -1,48 +1,42 @@
 import React, { useState } from 'react';
-import { 
-  Box, 
-  TextField, 
-  Button, 
-  Typography, 
-  Paper, 
-  Avatar,
-  Alert
-} from '@mui/material';
-import PetsIcon from '@mui/icons-material/Pets';
+import { TextField, Button, Box, Typography, Paper, CircularProgress } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [formError, setFormError] = useState('');
-  const { login, error } = useAuth();
+  const [nameError, setNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const { login, error, loading } = useAuth();
   const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-
-    //regex to check if email format is correct
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+  const validateForm = () => {
+    let isValid = true;
+    
+    if (!name.trim()) {
+      setNameError('Name is required');
+      isValid = false;
+    } else {
+      setNameError('');
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim() || !emailRegex.test(email)) {
+      setEmailError('Valid email is required');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
+    
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormError('');
-
-    // Validate form if name is filled
-    if (!name.trim()) {
-      setFormError('Please enter your name');
-      return;
-    }
-
-    // Check if email is filled in and valid
-    if (!email.trim() || !validateEmail(email)) {
-      setFormError('Please enter a valid email address');
-      return;
-    }
-
-    // login
+    
+    if (!validateForm()) return;
+    
     const result = await login(name, email);
     if (result.success) {
       navigate('/search');
@@ -50,20 +44,19 @@ const LoginForm = () => {
   };
 
   return (
-    <Paper elevation={6} sx={{ p: 5, maxWidth: 450, width: '100%', borderRadius: 3, background: 'linear-gradient(145deg, #ffffff, #f0f4f8)'}}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <PetsIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Fetch Dog Adoption
-        </Typography>
-      </Box>
+    <Paper elevation={3} sx={{ p: 4, mt: 8, borderRadius: 2 }}>
+      <Typography variant="h5" component="h1" gutterBottom align="center">
+        Welcome to Fetch Dog Adoption
+      </Typography>
       
-      {(error || formError) && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {formError || error}
-        </Alert>
+      <Typography variant="body1" gutterBottom align="center" sx={{ mb: 3 }}>
+        Sign in to find your perfect furry friend
+      </Typography>
+      
+      {error && (
+        <Typography color="error" align="center" sx={{ mb: 2 }}>
+          {error}
+        </Typography>
       )}
       
       <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -78,6 +71,9 @@ const LoginForm = () => {
           autoFocus
           value={name}
           onChange={(e) => setName(e.target.value)}
+          error={!!nameError}
+          helperText={nameError}
+          disabled={loading}
         />
         <TextField
           margin="normal"
@@ -89,14 +85,18 @@ const LoginForm = () => {
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          error={!!emailError}
+          helperText={emailError}
+          disabled={loading}
         />
         <Button
           type="submit"
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          disabled={loading}
         >
-          Find Your Perfect Dog
+          {loading ? <CircularProgress size={24} /> : 'Sign In'}
         </Button>
       </Box>
     </Paper>
