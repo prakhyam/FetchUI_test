@@ -233,9 +233,7 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
 
   return (
     <Box>
-      <Typography variant="subtitle2" gutterBottom>
-        Search by City, State, or ZIP Code
-      </Typography>
+      
       <Autocomplete
         multiple
         id="location-autocomplete"

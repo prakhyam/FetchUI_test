@@ -7,33 +7,57 @@ import {
   Card,
   CardMedia,
   CardContent,
-  Chip
+  Chip,
+  Alert
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import { useNavigate } from 'react-router-dom';
 
-const MatchResult = ({ matchedDog, onRestartSearch }) => {
+const MatchResult = ({ matchedDog, onRestartSearch, matchError }) => {
   const navigate = useNavigate();
+  
+  // Handle the case when no match is found or there's an error
+  if (matchError) {
+    return (
+      <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center', py: 4 }}>
+        <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+          <SentimentDissatisfiedIcon sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+          <Typography variant="h5" gutterBottom>
+            No Match Found
+          </Typography>
+          <Alert severity="info" sx={{ mb: 3, mx: 'auto', maxWidth: '80%' }}>
+            {matchError || "We couldn't find a dog that matches your requirements. Try adjusting your favorites or filter criteria."}
+          </Alert>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+            <Button 
+              variant="outlined" 
+              onClick={() => navigate('/search')}
+            >
+              Return to Search
+            </Button>
+            <Button 
+              variant="contained" 
+              onClick={onRestartSearch}
+            >
+              Try Again
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
+    );
+  }
   
   if (!matchedDog) {
     return (
       <Box sx={{ textAlign: 'center', py: 4 }}>
         <Typography variant="h5" color="text.secondary">
-          No match found
+          Loading your match...
         </Typography>
-        <Button 
-          variant="contained" 
-          onClick={() => navigate('/search')}
-          sx={{ mt: 2 }}
-        >
-          Return to Search
-        </Button>
       </Box>
     );
   }
 
-  // eslint-disable-next-line no-lone-blocks
-  {/* match result when a dog is found */}
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center' }}>
       <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
@@ -55,7 +79,7 @@ const MatchResult = ({ matchedDog, onRestartSearch }) => {
             sx={{ objectFit: 'cover' }}
           />
 
-      {/*Dog Name and Favorite Icon*/}
+          {/* Dog Name and Favorite Icon */}
           <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
               <Typography variant="h5" component="div" sx={{ mr: 1 }}>
@@ -78,7 +102,7 @@ const MatchResult = ({ matchedDog, onRestartSearch }) => {
               />
             </Box>
             
-            {/* Location display*/}
+            {/* Location display */}
             <Typography variant="body1">
               Location: {matchedDog.zip_code}
             </Typography>
@@ -96,7 +120,6 @@ const MatchResult = ({ matchedDog, onRestartSearch }) => {
             variant="contained" 
             color="secondary"
             onClick={() => {
-              // In a real app, this would initiate the adoption process
               alert(`Thank you for choosing to adopt ${matchedDog.name}! In a real application, this would start the adoption process.`);
             }}
           >
