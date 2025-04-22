@@ -33,7 +33,7 @@ const MatchResult = ({ matchedDog, onRestartSearch }) => {
   }
 
   // eslint-disable-next-line no-lone-blocks
-  {/* Displaying match result when a dog is found */}
+  {/* match result when a dog is found */}
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', textAlign: 'center' }}>
       <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>

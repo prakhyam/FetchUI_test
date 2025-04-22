@@ -12,12 +12,11 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import SearchIcon from '@mui/icons-material/Search';
 import { searchLocations } from '../api/fetchAPI';
 
-// Known locations with dogs based on your feedback - used as fallback
+// Known locations with dogs 
 const KNOWN_LOCATIONS = [
   { city: 'San Antonio', state: 'TX' },
   { city: 'Burlington Junction', state: 'MO' },
   { city: 'New Haven', state: 'CT' },
-  // Add more known locations as you discover them
 ];
 
 const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
@@ -27,7 +26,6 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
   const [open, setOpen] = useState(false);
   const [manualEntry, setManualEntry] = useState(null);
 
-  // Load popular cities and known locations on initial open
   useEffect(() => {
     if (open && options.length === 0) {
       loadInitialLocations();
@@ -37,10 +35,9 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
   const loadInitialLocations = async () => {
     setLoading(true);
     try {
-      // Popular cities - guaranteed to have some results
+      // Popular cities
       const popularCities = ['San Antonio', 'New York', 'Los Angeles', 'Chicago', 'Houston', 'New Haven', 'Burlington'];
       
-      // First handle our known locations that we want to ensure are available
       const knownLocationResults = [];
       for (const loc of KNOWN_LOCATIONS) {
         const response = await searchLocations({ 
@@ -52,7 +49,6 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
         if (response?.results?.length) {
           knownLocationResults.push(...response.results);
         } else {
-          // If the API doesn't find it, create a manual entry
           knownLocationResults.push({
             city: loc.city,
             state: loc.state,
@@ -63,7 +59,6 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
         }
       }
 
-      // Then search for popular cities
       const cityResults = [];
       for (const city of popularCities) {
         const response = await searchLocations({ city, size: 30 });
@@ -72,13 +67,11 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
         }
       }
 
-      // Also include some states for broader coverage
       const stateResponse = await searchLocations({ 
         states: ['TX', 'CA', 'NY', 'FL', 'MO', 'CT'], 
         size: 30 
       });
       
-      // Combine all results and ensure no duplicates
       const allResults = [
         ...knownLocationResults,
         ...cityResults,
@@ -104,19 +97,16 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
       const results = [];
       const searchParams = [];
       
-      // Prepare multiple search approaches
-      
-      // 1. City search (direct match)
+      // City search 
       searchParams.push({ city: searchText, size: 50 });
       
-      // 2. City search with partial matching
+      //City search with partial matching
       const words = searchText.split(/\s+/);
       if (words.length > 1) {
-        // For multi-word city names, try the first word too
         searchParams.push({ city: words[0], size: 50 });
       }
       
-      // 3. State handling
+      //State 
       const stateMatches = /^(.+),\s*([A-Za-z]{2})$/.exec(searchText);
       if (stateMatches) {
         const [, cityPart, statePart] = stateMatches;
@@ -127,17 +117,16 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
         });
       }
       
-      // 4. ZIP code handling
+      // ZIP code 
       if (/^\d{1,5}$/.test(searchText)) {
         searchParams.push({ zipCodes: [searchText], size: 30 });
       }
       
-      // 5. State code only
+      //State code 
       if (/^[A-Za-z]{2}$/.test(searchText)) {
         searchParams.push({ states: [searchText.toUpperCase()], size: 50 });
       }
       
-      // Execute all search approaches
       for (const params of searchParams) {
         try {
           const response = await searchLocations(params);
@@ -146,11 +135,9 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
           }
         } catch (err) {
           console.error('Search request failed:', err);
-          // Continue with other searches
         }
       }
       
-      // Check for known locations that match the search
       const searchLower = searchText.toLowerCase();
       const matchingKnownLocations = KNOWN_LOCATIONS.filter(loc => {
         const cityMatch = loc.city.toLowerCase().includes(searchLower);
@@ -159,9 +146,7 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
         return cityMatch || stateMatch || combinedMatch;
       });
       
-      // Add matching known locations if not already in results
       for (const knownLoc of matchingKnownLocations) {
-        // Check if this known location is already included in results
         const alreadyIncluded = results.some(r => 
           r.city.toLowerCase() === knownLoc.city.toLowerCase() && 
           r.state === knownLoc.state
@@ -178,12 +163,10 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
         }
       }
       
-      // Create a manual entry option if significant search and no results or exact match not found
       const exactMatch = searchText.includes(',') && 
         results.some(r => `${r.city}, ${r.state}`.toLowerCase() === searchText.toLowerCase());
       
       if (searchText.length >= 3 && (results.length === 0 || !exactMatch)) {
-        // Parse as "City, State" if possible
         const parts = searchText.split(',').map(p => p.trim());
         
         const manualEntryOption = {
@@ -210,9 +193,7 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
   const groupLocationsByCityState = (locations) => {
     const grouped = {};
     
-    // Process regular locations
     locations.forEach(loc => {
-      // Skip entries without required data
       if (!loc.city) return;
       
       const key = `${loc.city.trim()}-${loc.state || ''}`.toLowerCase();
@@ -220,7 +201,7 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
         grouped[key] = {
           ...loc,
           zip_codes: loc.zip_codes || [loc.zip_code || 'Unknown'],
-          city: loc.city.trim(), // Ensure clean city names
+          city: loc.city.trim(), 
           state: loc.state || '',
           isManualEntry: loc.isManualEntry || false
         };
@@ -232,7 +213,6 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
     return Object.values(grouped);
   };
 
-  // Handle adding manual location entry
   const handleAddManualLocation = () => {
     if (manualEntry) {
       onLocationsChange([...selectedLocations, manualEntry]);
@@ -300,7 +280,6 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
           />
         )}
         renderOption={(props, option) => {
-          // Extract the key from props and keep the rest
           const { key, ...restProps } = props;
           
           return (
@@ -334,7 +313,6 @@ const LocationFilter = ({ selectedLocations, onLocationsChange }) => {
         }}
       />
 
-      {/* Manual entry option if search doesn't find a match */}
       {manualEntry && (
         <Box sx={{ mt: 1, p: 1, border: '1px dashed', borderColor: 'divider', borderRadius: 1 }}>
           <Typography variant="body2">

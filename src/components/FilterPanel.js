@@ -64,12 +64,10 @@ const FilterPanel = ({
   };
 
   const handleApplyFilters = () => {
-    // Update parent component state
     onBreedsChange(localBreeds);
     onAgeChange(localAgeMin, localAgeMax);
     onLocationsChange(localLocations);
     
-    // Pass local state directly to onApplyFilters
     onApplyFilters(localBreeds, localAgeMin, localAgeMax, localLocations);
   };
 

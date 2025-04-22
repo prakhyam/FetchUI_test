@@ -5,7 +5,6 @@ import api from '../api/fetchAPI';
 //authentication context
 const AuthContext = createContext();
 
-// hook to allow access to the auth context from any component
 export const useAuth = () => {
   return useContext(AuthContext);
 };
@@ -16,14 +15,13 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Check if user info is stored in localStorage
+    // Checking if user info is stored in localStorage
     const storedUser = localStorage.getItem('user');
     
     const verifySession = async () => {
       if (storedUser) {
         try {
-          // Make a simple API call to verify the session is still valid
-          // We'll use the getBreeds endpoint as a lightweight check
+      
           await api.get('/dogs/breeds');
           setCurrentUser(JSON.parse(storedUser));
         } catch (err) {
@@ -43,10 +41,8 @@ export const AuthProvider = ({ children }) => {
       setError('');
       setLoading(true);
 
-      // Send login request to backend
       await apiLogin(name, email);
 
-      // If successful, store user info locally
       const userData = { name, email };
       setCurrentUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -63,12 +59,10 @@ export const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      // Call logout endpoint to clear server session
       await apiLogout();
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      // Always clear local state and storage, even if API call fails
       setCurrentUser(null);
       localStorage.removeItem('user');
       setLoading(false);

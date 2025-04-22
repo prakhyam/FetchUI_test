@@ -16,7 +16,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 const DogCard = ({ dog, isFavorite, onToggleFavorite, locationData }) => {
   const { id, img, name, age, zip_code, breed } = dog;
 
-  // Get location data for this dog if available
+  // fromatted location (city, state) if available, otherwise fallback to zip
   const location = locationData && locationData.length > 0 ? 
     locationData.find(loc => loc.zip_code === zip_code) : null;
   

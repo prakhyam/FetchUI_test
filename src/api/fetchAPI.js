@@ -1,14 +1,15 @@
 import axios from 'axios';
 
+// the base URL for the API. If an environment variable isn't set, we default to the given Fetch API.
 const API_URL = process.env.REACT_APP_API_URL || 'https://frontend-take-home-service.fetch.com';
 
-// Create axios instance with better error handling
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true, // Important for cookie handling
+  withCredentials: true, //for cookie handling
 });
 
-// Add request interceptor to log requests for debugging
+
+// it just logs every API request to the console, useful during deployment
 api.interceptors.request.use(
   config => {
     console.log(`API Request: ${config.method.toUpperCase()} ${config.url}`);
@@ -19,17 +20,15 @@ api.interceptors.request.use(
   }
 );
 
-// Add response interceptor for better error handling
+// Handle 401 Unauthorized globally
 api.interceptors.response.use(
   response => {
-    return response;
+    return response;  //just return the response, if it works fine
   },
   error => {
     if (error.response) {
-      // The request was made, but the server responded with an error status
       console.error('API Error Response:', error.response.status, error.response.data);
       
-      // If unauthorized and not already on login page, clear user data
       if (error.response.status === 401 && window.location.pathname !== '/login') {
         console.log('Session expired, clearing local user data');
         localStorage.removeItem('user');
@@ -50,6 +49,8 @@ api.interceptors.response.use(
   }
 );
 
+
+// Auth APIs
 export const login = async (name, email) => {
   try {
     const response = await api.post('/auth/login', { name, email });
@@ -59,7 +60,6 @@ export const login = async (name, email) => {
   }
 };
 
-// Rest of your API functions remain the same
 export const logout = async () => {
   try {
     const response = await api.post('/auth/logout');
@@ -69,6 +69,7 @@ export const logout = async () => {
   }
 };
 
+// Dog APIs
 export const getBreeds = async () => {
   try {
     const response = await api.get('/dogs/breeds');
@@ -105,6 +106,8 @@ export const getMatch = async (dogIds) => {
   }
 };
 
+
+// Location APIs
 export const getLocations = async (zipCodes) => {
   try {
     if (!zipCodes || zipCodes.length === 0) {
@@ -120,10 +123,8 @@ export const getLocations = async (zipCodes) => {
 
 export const searchLocations = async (params) => {
   try {
-    // Default empty results structure to ensure consistent returns
     const defaultResponse = { results: [], total: 0 };
     
-    // Validate params to avoid API errors
     if (params.states && params.states.length === 0) {
       delete params.states;
     }
@@ -132,20 +133,16 @@ export const searchLocations = async (params) => {
       delete params.zipCodes;
     }
     
-    // Make sure we're using a sufficient result size
     if (!params.size || params.size < 20) {
-      params.size = 50; // Ensure we get enough results
+      params.size = 50; 
     }
     
-    // For empty search requests, add a minimum search parameter
     if (Object.keys(params).length === 1 && params.size) {
-      // Just add some popular states to get results
       params.states = ['CA', 'TX', 'NY', 'FL'];
     }
     
     const response = await api.post('/locations/search', params);
     
-    // Ensure we have a valid response with results
     if (response && response.data) {
       return response.data;
     }
@@ -153,7 +150,6 @@ export const searchLocations = async (params) => {
     return defaultResponse;
   } catch (error) {
     console.error('Error searching locations:', error);
-    // Return empty result structure instead of throwing
     return { results: [], total: 0 };
   }
 };
